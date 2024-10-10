@@ -1,0 +1,185 @@
+---
+swagger: "2.0"
+info:
+  description: "This is an API for a library project that will be used in our SLO\
+    \ course."
+  version: "v0.0.1"
+  title: "Library API Spec"
+schemes:
+- "http"
+- "https"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /v1/book:
+    get:
+      tags:
+      - "Book"
+      operationId: "list_books"
+      parameters: []
+      responses:
+        "200":
+          description: "A successful response and a list of books is returned."
+          schema:
+            $ref: "#/definitions/ListBooksResponse"
+      x-swagger-router-controller: "swagger_server.controllers.book_controller"
+    post:
+      tags:
+      - "Book"
+      operationId: "create_book"
+      parameters:
+      - in: "body"
+        name: "book"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateBookRequest"
+        x-exportParamName: "Book"
+      responses:
+        "200":
+          description: "A successful response and a book is created."
+          schema:
+            $ref: "#/definitions/CreateBookResponse"
+        "403":
+          description: "Another book with the same ID exists"
+          schema:
+            $ref: "#/definitions/CreateBookResponse"
+      x-swagger-router-controller: "swagger_server.controllers.book_controller"
+  /v1/book/{bookID}:
+    get:
+      tags:
+      - "Book"
+      operationId: "get_book_by_id"
+      parameters:
+      - name: "bookID"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "bookID"
+      responses:
+        "200":
+          description: "A successful response and the book details are returned."
+          schema:
+            $ref: "#/definitions/Book"
+        "404":
+          description: "Book not found"
+      x-swagger-router-controller: "swagger_server.controllers.book_controller"
+    put:
+      tags:
+      - "Book"
+      operationId: "update_book"
+      parameters:
+      - name: "bookID"
+        in: "path"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "book"
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateBookRequest"
+      responses:
+        "200":
+          description: "A successful response and the book is updated."
+          schema:
+            $ref: "#/definitions/UpdateBookResponse"
+        "404":
+          description: "Book not found"
+      x-swagger-router-controller: "swagger_server.controllers.book_controller"
+    delete:
+      tags:
+      - "Book"
+      operationId: "delete_book"
+      parameters:
+      - name: "bookID"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "bookID"
+      responses:
+        "200":
+          description: "A successful response and the book is deleted."
+          schema:
+            $ref: "#/definitions/DeleteBookResponse"
+      x-swagger-router-controller: "swagger_server.controllers.book_controller"
+definitions:
+  CreateBookRequest:
+    type: "object"
+    properties:
+      bookID:
+        type: "string"
+      bookDescription:
+        type: "string"
+      bookTitle:
+        type: "string"
+      bookAuthor:
+        type: "string"
+    example:
+      bookDescription: "bookDescription"
+      bookAuthor: "bookAuthor"
+      bookID: "bookID"
+      bookTitle: "bookTitle"
+  CreateBookResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      message:
+        type: "string"
+    example:
+      message: "Book created successfully."
+      status: "Success"
+  ListBooksResponse:
+    type: "array"
+    items:
+      $ref: "#/definitions/Book"
+  Book:
+    type: "object"
+    properties:
+      bookID:
+        type: "string"
+      bookDescription:
+        type: "string"
+      bookTitle:
+        type: "string"
+      bookAuthor:
+        type: "string"
+    example:
+      bookDescription: "bookDescription"
+      bookAuthor: "bookAuthor"
+      bookID: "bookID"
+      bookTitle: "bookTitle"
+  UpdateBookRequest:
+    type: "object"
+    properties:
+      bookDescription:
+        type: "string"
+      bookTitle:
+        type: "string"
+      bookAuthor:
+        type: "string"
+    example:
+      bookDescription: "bookDescription"
+      bookAuthor: "bookAuthor"
+      bookTitle: "bookTitle"
+  UpdateBookResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      message:
+        type: "string"
+    example:
+      message: "Book updated successfully."
+      status: "Success"
+  DeleteBookResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      message:
+        type: "string"
+    example:
+      message: "Book deleted successfully."
+      status: "Success"
